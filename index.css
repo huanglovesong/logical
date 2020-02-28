@@ -1,0 +1,56 @@
+div {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    /* Firefox */
+    -webkit-box-sizing: border-box;
+    /* Safari */
+}
+
+.main-content {
+    width: 600px;
+    height: 600px;
+    border: 1px solid gray;
+}
+
+.first-line {
+    width: 100%;
+    height: 300px;
+    border-bottom: 1px solid gray;
+}
+
+.second-line {
+    width: 100%;
+    height: 200px;
+    border-bottom: 1px solid gray;
+}
+
+.third-line {
+    width: 100%;
+    height: 100px;
+}
+
+.first-line .float-left,
+.second-line .float-left,
+.third-line .float-left {
+    float: left;
+    width: 25%;
+    height: 100%;
+    border-right: 1px solid gray;
+
+}
+
+.float-left:nth-child(4) {
+    border-right: none;
+}
+
+.clearfix:after {
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0;
+}
+
+.clearfix {
+    zoom: 1;
+}

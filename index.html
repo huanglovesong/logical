@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fingerprint2 TEST</title>
+    <style>
+        body {
+            color: #555;
+        }
+
+        #info {
+            font-size: 12px;
+        }
+
+        #control span {
+            color: #333;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <button value="点击" id="btn">点击</button>
+    <div id="textInfo"></div>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        //除法函数，用来得到精确的除法结果
+        //说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
+        //调用：accDiv(arg1,arg2)
+        //返回值：arg1除以arg2的精确结果
+        function accDiv(arg1, arg2) {
+            var t1 = 0, t2 = 0, r1, r2;
+            try { t1 = arg1.toString().split(".")[1].length } catch (e) { }
+            try { t2 = arg2.toString().split(".")[1].length } catch (e) { }
+            with (Math) {
+                r1 = Number(arg1.toString().replace(".", ""))
+                r2 = Number(arg2.toString().replace(".", ""))
+                return (r1 / r2) * pow(10, t2 - t1);
+            }
+        }
+        //加法函数，用来得到精确的加法结果
+        //说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
+        //调用：accAdd(arg1,arg2)
+        //返回值：arg1加上arg2的精确结果
+        function accAdd(arg1, arg2) {
+            var r1, r2, m;
+            try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+            try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+            m = Math.pow(10, Math.max(r1, r2))
+            return (arg1 * m + arg2 * m) / m
+        }
+        $(function () {
+            $("#btn").click(function () {
+
+                // 腾讯微云—T-689-CCH-20190326-02：https://dcm.qq.com/assets/query/1450020339?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.34544887090947785
+                // QQ增值业务-T102-PCG-2020011000009：https://dcm.qq.com/assets/query/1450020230?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.21963752078250476
+                // QQ增值业务—T-688-CCH-20190320-02：https://dcm.qq.com/assets/query/1450020230/T-688-CCH-20190320-02?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.788665020845537
+
+                // 腾讯视频-电商业务组-T102-PCG-2020011300011：https://dcm.qq.com/assets/query/1450016560?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.17771331439665627
+                // 腾讯视频-电商业务组-T-388-CCH-20190531-05：https://dcm.qq.com/assets/query/1450016560/T-388-CCH-20190531-05?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.8329299951428122
+                // 腾讯视频-电商业务组-T-388-CCH-20190122-01：https://dcm.qq.com/assets/query/1450016560/T-388-CCH-20190122-01?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.8329299951428122
+                // 腾讯视频-电商业务组-T-388-CCH-20180111-02：https://dcm.qq.com/assets/query/1450016560/T-388-CCH-20180111-02?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.8329299951428122
+
+                // 腾讯视频-异业合作组-T102-PCG-2020021700007：https://dcm.qq.com/assets/query/1450022530/T102-PCG-2020021700007?subMerchantId=0&sck=15fe64466a2d81d7ed59d71f8df24f84&r=0.24598928405643172
+                // 腾讯视频-异业合作组-T-388-CCH-20190723-03：https://dcm.qq.com/assets/query/1450022530/T-388-CCH-20190723-03?subMerchantId=0&sck=15fe64466a2d81d7ed59d71f8df24f84&r=0.24598928405643172
+
+                // 腾讯体育-T-184-CCH-20171009-01：https://dcm.qq.com/assets/query/1450020333?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.656466244959383
+
+
+                let productId = '1450022530';
+                var sck = '372473bc29e2da278fadde66765b1957', wholesale_sid = 'ly26jQZ55kMDks5kdKXZSGRNMesTACqd', contractId = 'T-388-CCH-20190723-03';
+                $.ajax({
+                    type: "get",
+                    url: "http://192.168.2.102:3008/",
+                    data: { sck, wholesale_sid, productId, contractId },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        let { contractProductInfos, balanceList, contractAcctInfos, cdkeyContractAcctInfos, rebateGoodsAcctInfos,
+                            rebateGoodsBalanceList } = data.msg.info;
+                        let rule = [], rebateGoodsRule = [];
+                        let arr = [];
+                        let balanceArr = [];
+                        // ===========================账户资源=======================
+                        contractProductInfos.map((item) => {
+                            // 组合需要匹配的数据
+                            let FJifenProductList = item.contractProduct.FJifenOfferID + ',' + item.contractProduct.FJifenProductID;
+                            // 除的价格
+                            let price = JSON.parse(item.contractProduct.FGradientPrices);
+                            price.map((priceitem) => {
+                                priceitem.FJifenProductList = FJifenProductList;
+                                priceitem.FName = item.jifenProduct.FName;
+                                priceitem.FRebatePrice = item.contractProduct.FRebatePrice;
+                            })
+                            // 规则
+                            rule.push(price);
+                        });
+
+                        // 组合banlance数据
+                        balanceList.map((banlitem) => {
+                            // 普通数据
+                            contractAcctInfos.map((item) => {
+                                if (banlitem.contract_acct_id === item.FContractAcctID) {
+                                    banlitem.FJifenProductList = item.FJifenProductList;
+                                    banlitem.FGradient = item.FGradient;
+                                }
+                            })
+                            // cdk数据
+                            cdkeyContractAcctInfos.map((item) => {
+                                if (banlitem.contract_acct_id === item.FContractAcctID) {
+                                    banlitem.FJifenProductListCDK = item.FJifenProductList;
+                                    banlitem.FGradientCDK = item.FGradient;
+                                }
+                            })
+                        });
+
+                        rule.map((item) => {
+                            item.map((innerItem, index) => {
+                                balanceList.map((banlitem) => {
+                                    // 计算返回结果普通数据
+                                    if (innerItem.FJifenProductList === banlitem.FJifenProductList && index === banlitem.FGradient) {
+                                        innerItem.balance = banlitem.balance;
+                                        innerItem.all_in = banlitem.all_in;
+                                        // 计算所有的
+                                        innerItem.calcAllIn = accDiv(banlitem.all_in, innerItem.price);
+                                        // 计算剩余的
+                                        innerItem.calcBanlace = accDiv(banlitem.balance, innerItem.price);
+                                    }
+                                    // 计算返回结果CDK数据
+                                    if (innerItem.FJifenProductList === banlitem.FJifenProductListCDK && index === banlitem.FGradientCDK) {
+                                        innerItem.balanceCDK = banlitem.balance;
+                                        innerItem.all_inCDK = banlitem.all_in;
+                                        // 计算所有的
+                                        innerItem.calcAllInCDK = accDiv(banlitem.all_in, innerItem.price);
+                                        // 计算剩余的
+                                        innerItem.calcBanlaceCDK = accDiv(banlitem.balance, innerItem.price);
+                                    }
+                                });
+
+                            });
+                        });
+                        let nowAllArr = [];
+                        // 重新组合输出数据
+                        rule.map((item) => {
+                            let calcAddAllIn = 0, calcAddBanlace = 0, FName = '', calcAddAllInCDK = 0, calcAddBanlaceCDK = 0;
+                            item.map((innerItem) => {
+                                calcAddAllIn += innerItem.calcAllIn;
+                                calcAddBanlace += innerItem.calcBanlace;
+                                FName = innerItem.FName;
+                                innerItem.calcAllInCDK && (calcAddAllInCDK += innerItem.calcAllInCDK);
+                                innerItem.calcBanlaceCDK && (calcAddBanlaceCDK += innerItem.calcBanlaceCDK);
+                            });
+                            nowAllArr.push({ calcAddAllIn, calcAddBanlace, FName, calcAddBanlaceCDK, calcAddAllInCDK });
+                        });
+
+
+                        // ===========================赠送账户===========================
+                        let rebateGoodsBalanceArr = [];
+                        rebateGoodsBalanceList.map((banlitem) => {
+                            rebateGoodsAcctInfos.map((item) => {
+                                if (banlitem.contract_acct_id === item.FContractAcctID) {
+                                    rebateGoodsBalanceArr.push({
+                                        contract_acct_id: banlitem.contract_acct_id,
+                                        balance: banlitem.balance,
+                                        all_in: banlitem.all_in,
+                                        FJifenProductListRebase: item.FJifenProductList,
+                                    });
+
+                                }
+                            })
+                        });
+                        rule.map((item) => {
+                            item.map((nowItem) => {
+                                rebateGoodsBalanceArr.map((innerItem) => {
+                                    // 计算返回结果
+                                    if (innerItem.FJifenProductListRebase === nowItem.FJifenProductList) {
+                                        // 计算所有的
+                                        innerItem.FRebatePrice = nowItem.FRebatePrice;
+                                        // 计算所有的
+                                        innerItem.calcAllIn = accDiv(innerItem.all_in, nowItem.FRebatePrice);
+                                        // 计算所有的
+                                        innerItem.FName = nowItem.FName;
+                                        // 计算剩余的
+                                        innerItem.calcBanlace = accDiv(innerItem.balance, nowItem.FRebatePrice);
+                                    }
+                                })
+                            });
+
+                        });
+                        console.log(rule, 111)
+                        console.log(nowAllArr, 22222)
+                        console.log(rebateGoodsBalanceArr, 222224444)
+
+                    }
+                });
+            });
+        })
+    </script>
+</body>
+
+</html>
