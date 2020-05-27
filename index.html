@@ -23,7 +23,9 @@
 <body>
     <button value="点击" id="btn">点击</button>
     <div id="textInfo"></div>
+    <script src="./json.js"></script>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="./pachong.js"></script>
     <script>
         $(function () {
             $("#btn").click(function () {
@@ -42,11 +44,11 @@
                 // 腾讯体育-T-184-CCH-20171009-01：https://dcm.qq.com/assets/query/1450020333?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.656466244959383
 
 
-                let productId = '1450016560';
-                var sck = '7b68ab36a6b9b5f8680838b78f20103c', wholesale_sid = 'MpS9hsGlwbi2v-ZKwkZe9ZmRPfIvXipd', contractId = 'T-388-CCH-20190122-01';
+                let productId = '1450020333';
+                var sck = 'cf332c8edccda17ce35b45e889b57329', wholesale_sid = 'Pr5UaQrdNgAjuNXgxDysFF75Bi3gtXes', contractId = '';
                 $.ajax({
                     type: "get",
-                    url: "http://192.168.2.102:3008/",
+                    url: "http://10.0.1.64:3008/",
                     data: { sck, wholesale_sid, productId, contractId },
                     dataType: "json",
                     async: false,
