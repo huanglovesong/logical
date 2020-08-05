@@ -26,6 +26,19 @@
     <script src="./json.js"></script>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="./pachong.js"></script>
+    <script src="./test.js"></script>
+    <script>
+
+
+        let arr = res.data.rows;
+        console.log(arr)
+        var resultArray = arr.sort(
+            function compareFunction(param1, param2) {
+                return param1.projecttypeName.localeCompare(param2.projecttypeName, "zh");
+            }
+        );
+        console.log(resultArray, 9888)
+    </script>
     <script>
         $(function () {
             $("#btn").click(function () {
