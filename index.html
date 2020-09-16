@@ -33,7 +33,7 @@
     </script>
     <script>
         $(function () {
-            var sck = 'bb8048b33a6fc88f90d5f43502ef4372', wholesale_sid = '56NtlAbbUZ1AlzD5V6Z8vFbOg30JOKL0', contractId = '';
+            var sck = '6887e5fa1b5d3a1b1af6f0e025763416', wholesale_sid = 'jM2ySURgTSFb8DjcmuhfqWlMJRQ29tJq', contractId = '';
             $("#btn").click(function () {
                 // 腾讯微云—T-689-CCH-20190326-02：https://dcm.qq.com/assets/query/1450020339?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.34544887090947785
                 // QQ增值业务-T102-PCG-2020011000009：https://dcm.qq.com/assets/query/1450020230?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.21963752078250476
@@ -66,7 +66,9 @@
             $("#btn1").click(function () {
                 let obj = {
                     wholesale_sid,
-                    sck
+                    businessGroupId: 2,//  电商业务组:1 异业合作组:2
+                    sck,
+                    id: 1450022530, // 电商业务组:1450016560 异业合作组:1450022530 
                 };
 
                 $.ajax({
