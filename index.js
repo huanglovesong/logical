@@ -57,6 +57,7 @@ app.get('/', function (req, res, next) {
                 return next(err);
             }
             let resData = JSON.parse(sres.text);
+            console.log(resData, 999999)
             let { contractProductInfos, balanceList, contractAcctInfos, cdkeyContractAcctInfos, rebateGoodsAcctInfos,
                 rebateGoodsBalanceList, rebateMoneyWaters } = resData.info;
             let rule = [], rebateGoodsRule = [];
@@ -200,6 +201,55 @@ app.get('/', function (req, res, next) {
             }
             res.send(errorData_500);
         });
+});
+app.get('/getList', function (req, res, next) {
+    const { wholesale_sid, sck } = req.query;
+    const obj = {
+        outputType: 'json',
+        type: 'money',
+        contractId: '',
+        status: '',
+        businessId: '30',
+        businessGroupId: 1,
+        sck,
+        r: Math.random()
+    };
+    let url = `https://dcm.qq.com/rebate/list/1450016560`;
+    superagent.post(url)
+        .send({
+            ...obj
+        })
+        .set('Content-Type', 'application/x-www-form-urlencoded')
+        .set("Cookie", `wholesale_sid=${wholesale_sid}`)
+        .end(function (err, sres) {
+            // 常规的错误处理
+            if (err) {
+                return next(err);
+            }
+            let resData = JSON.parse(sres.text);
+            console.log(resData, 999)
+            let { rebateMoneyWaters, applyAdminUsers, approvals } = resData.info;
+            // 合同编号：FContractID  代理服务费来源：FFromIntro  返还时间：FCreateTime  到账时间：FProvideTime
+            // 代理服务费金额(存储了两位小数，示例：24586610=245866.10)：FRebatePrice 	当前状态：FStatusText  发起人：FStaffRTX
+            const FStatusObj = { 0: "待审批", 1: "未使用", 2: "已使用", 3: "审批拒绝" };
+            rebateMoneyWaters.map((item) => {
+                item.FStatusText = FStatusObj[item.FStatus];
+                if (!item.FApplyOpenID) {
+                    item.FStaffRTX = '系统发起';
+                }
+                applyAdminUsers.map((nowItem) => {
+                    if (item.FApplyOpenID === nowItem.FOpenID) {
+                        item.FStaffRTX = nowItem.FStaffRTX || '发起人已被移除';
+                    }
+                });
+            });
+            var errorData_500 = {
+                status: '200',
+                msg: rebateMoneyWaters,
+            }
+            res.send(errorData_500);
+        });
+
 });
 
 

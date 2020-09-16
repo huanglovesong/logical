@@ -187,6 +187,26 @@ $(function () {
     let obj = { contractAcctInfos: nowAllArr, rebateGoodsBalanceArr: rebateGoodsBalanceArrUnique };
 })
 
+$(function () {
+    let { rebateMoneyWaters, applyAdminUsers, approvals } = getListJson.info;
+    console.log(rebateMoneyWaters, applyAdminUsers, approvals)
+    // 合同编号：FContractID  代理服务费来源：FFromIntro  返还时间：FCreateTime  到账时间：FProvideTime
+    // 代理服务费金额(存储了两位小数，示例：24586610=245866.10)：FRebatePrice 	当前状态：FStatusText  发起人：FStaffRTX
+    const FStatusObj = { 0: "待审批", 1: "未使用", 2: "已使用", 3: "审批拒绝" };
+    rebateMoneyWaters.map((item) => {
+        item.FStatusText = FStatusObj[item.FStatus];
+        if (!item.FApplyOpenID) {
+            item.FStaffRTX = '系统发起';
+        }
+        applyAdminUsers.map((nowItem) => {
+            if (item.FApplyOpenID === nowItem.FOpenID) {
+                item.FStaffRTX = nowItem.FStaffRTX || '发起人已被移除';
+            }
+        });
+    });
+    console.log(rebateMoneyWaters, 999)
+});
+
 //除法函数，用来得到精确的除法结果
 //说明：javascript的除法结果会有误差，在两个浮点数相除的时候会比较明显。这个函数返回较为精确的除法结果。
 //调用：accDiv(arg1,arg2)

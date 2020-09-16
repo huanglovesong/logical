@@ -22,25 +22,18 @@
 
 <body>
     <button value="点击" id="btn">点击</button>
+    <button value="点击获取返点列表" id="btn1">点击获取返点列表</button>
     <div id="textInfo"></div>
     <script src="./json.js"></script>
+    <script src="./getList.js"></script>
     <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="./pachong.js"></script>
-    <script src="./test.js"></script>
     <script>
-
-
-        let arr = res.data.rows;
-        console.log(arr)
-        var resultArray = arr.sort(
-            function compareFunction(param1, param2) {
-                return param1.projecttypeName.localeCompare(param2.projecttypeName, "zh");
-            }
-        );
-        console.log(resultArray, 9888)
+        console.log(getListJson)
     </script>
     <script>
         $(function () {
+            var sck = 'bb8048b33a6fc88f90d5f43502ef4372', wholesale_sid = '56NtlAbbUZ1AlzD5V6Z8vFbOg30JOKL0', contractId = '';
             $("#btn").click(function () {
                 // 腾讯微云—T-689-CCH-20190326-02：https://dcm.qq.com/assets/query/1450020339?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.34544887090947785
                 // QQ增值业务-T102-PCG-2020011000009：https://dcm.qq.com/assets/query/1450020230?subMerchantId=0&sck=d1465b1f11865f6817349be946c631d6&r=0.21963752078250476
@@ -58,11 +51,28 @@
 
 
                 let productId = '1450020333';
-                var sck = 'cf332c8edccda17ce35b45e889b57329', wholesale_sid = 'Pr5UaQrdNgAjuNXgxDysFF75Bi3gtXes', contractId = '';
+
                 $.ajax({
                     type: "get",
-                    url: "http://10.0.1.64:3008/",
+                    url: "http://localhost:3008/",
                     data: { sck, wholesale_sid, productId, contractId },
+                    dataType: "json",
+                    async: false,
+                    success: function (data) {
+                        console.log(data, 111)
+                    }
+                });
+            });
+            $("#btn1").click(function () {
+                let obj = {
+                    wholesale_sid,
+                    sck
+                };
+
+                $.ajax({
+                    type: "get",
+                    url: "http://localhost:3008/getList",
+                    data: { ...obj },
                     dataType: "json",
                     async: false,
                     success: function (data) {
